@@ -4,16 +4,17 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import android.widget.CalendarView.OnDateChangeListener
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
 
 
 class MainActivity : AppCompatActivity() {
     // on below line we are creating
     // variables for text view and calendar view
     private lateinit var dateTV: TextView
-    private lateinit var calendarView: CalendarView
+    private lateinit var calendarView: MaterialCalendarView
     private lateinit var uid: EditText
     private lateinit var listView: ListView
 
@@ -28,17 +29,27 @@ class MainActivity : AppCompatActivity() {
         calendarView = findViewById(R.id.calendarView)
         uid = findViewById<View>(R.id.u_id) as EditText
 
-        // on below line we are adding set on
-        // date change listener for calendar view.
-        calendarView
-            .setOnDateChangeListener(
-                OnDateChangeListener { view, year, month, dayOfMonth ->
-                    val date = (dayOfMonth.toString() + "-"  + (month + 1) + "-" + year)
-                    val dateInt = year*10000 + (month+1)*100 + dayOfMonth
+//        // on below line we are adding set on
+//        // date change listener for calendar view.
+//        calendarView
+//            .setOnDateChangeListener(
+//                OnDateChangeListener { view, year, month, dayOfMonth ->
+//                    val date = (dayOfMonth.toString() + "-"  + (month + 1) + "-" + year)
+//                    val dateInt = year*10000 + (month+1)*100 + dayOfMonth
+//
+//                    dateTV.text = date
+//                    uid.setText(dateInt.toString())
+//                })
+        calendarView.setOnDateChangedListener(OnDateSelectedListener { widget, date, selected ->
+            val year = date.year
+            val month = date.month
+            val dayOfMonth = date.day
+            val date = (dayOfMonth.toString() + "-"  + (month + 1) + "-" + year)
+            val dateInt = year*10000 + (month+1)*100 + dayOfMonth
 
-                    dateTV.text = date
-                    uid.setText(dateInt.toString())
-                })
+            dateTV.text = date
+            uid.setText(dateInt.toString())
+        })
 
         //method for saving records in database
         fun saveRecord() {
