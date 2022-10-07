@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Habits</string>
+    <string name="user_id">User Id</string>
+    <string name="current_date">Current Date</string>
+    <string name="save">Save</string>
+    <string name="view">View</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
+    <string name="enter_id">enter id</string>
+    <string name="id">Id</string>
+</resources>
