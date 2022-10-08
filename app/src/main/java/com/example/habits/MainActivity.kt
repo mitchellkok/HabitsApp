@@ -1,11 +1,13 @@
 package com.example.habits
 
 import android.content.DialogInterface
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
 
@@ -23,32 +25,25 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        // initializing variables of
-        // list view with their ids.
-        dateTV = findViewById(R.id.idTVDate)
         calendarView = findViewById(R.id.calendarView)
         uid = findViewById<View>(R.id.u_id) as EditText
 
-//        // on below line we are adding set on
-//        // date change listener for calendar view.
-//        calendarView
-//            .setOnDateChangeListener(
-//                OnDateChangeListener { view, year, month, dayOfMonth ->
-//                    val date = (dayOfMonth.toString() + "-"  + (month + 1) + "-" + year)
-//                    val dateInt = year*10000 + (month+1)*100 + dayOfMonth
-//
-//                    dateTV.text = date
-//                    uid.setText(dateInt.toString())
-//                })
+        //creating the instance of DatabaseHandler class
+        val databaseHandler = DatabaseHandler(this)
         calendarView.setOnDateChangedListener(OnDateSelectedListener { widget, date, selected ->
             val year = date.year
-            val month = date.month
+            val month = date.month + 1
             val dayOfMonth = date.day
-            val date = (dayOfMonth.toString() + "-"  + (month + 1) + "-" + year)
-            val dateInt = year*10000 + (month+1)*100 + dayOfMonth
+//            val date = ("$dayOfMonth-$month-$year")
+            val dateInt = year*10000 + month*100 + dayOfMonth
 
-            dateTV.text = date
             uid.setText(dateInt.toString())
+
+            var dates = ArrayList<CalendarDay>()
+            dates.add(CalendarDay.from(year, month-1, dayOfMonth - 1))
+            dates.add(CalendarDay.from(year, month-1, dayOfMonth - 2))
+            calendarView.addDecorator(MDayDecorator(this@MainActivity, Color.RED, dates))
+
         })
 
         //method for saving records in database
@@ -72,19 +67,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         //method for read records from database in ListView
-        fun viewRecord() {
-            //creating the instance of DatabaseHandler class
-            val databaseHandler = DatabaseHandler(this)
-
+        fun viewRecord(databaseHandler: DatabaseHandler) {
             //calling the viewEntry method of DatabaseHandler class to read the records
             val emp: List<EmpModelClass> = databaseHandler.viewEntry()
-            val empArrayId = Array(emp.size){"0"}
+            val dateArrayId = Array(emp.size){"0"}
             for((index, e) in emp.withIndex()){
-                empArrayId[index] = e.userId.toString()
-                println("empArrayId[index] = ${empArrayId[index]}")
+                dateArrayId[index] = e.userId.toString()
+                println("dateArrayId[index] = ${dateArrayId[index]}")
             }
 
-            val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, empArrayId)
+            val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, dateArrayId)
 
             //creating custom ArrayAdapter
             listView = findViewById<ListView>(R.id.listView)
@@ -93,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         }
         val viewRecordButton: Button = findViewById(R.id.viewRecordButton)
         viewRecordButton.setOnClickListener {
-            viewRecord()
+            viewRecord(databaseHandler)
         }
 
         //method for updating records based on user id

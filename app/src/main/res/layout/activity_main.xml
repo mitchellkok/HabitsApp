@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,46 +7,30 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom">
-        <Button
-            android:id="@+id/saveRecordButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/save"
-            style="?android:attr/buttonBarButtonStyle" />
-        <Button
-            android:id="@+id/viewRecordButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/view"
-            style="?android:attr/buttonBarButtonStyle" />
-        <Button
-            android:id="@+id/updateRecordButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/update"
-            style="?android:attr/buttonBarButtonStyle" />
-        <Button
-            android:id="@+id/deleteRecordButton"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/delete" />
-
-    </LinearLayout>
-
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <TableRow>
+            <RelativeLayout>
+
+                <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/calendarView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:mcv_showOtherDates="all"
+                    app:mcv_selectionColor="#00F"
+                    />
+            </RelativeLayout>
+        </TableRow>
 
         <TableRow>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:orientation="horizontal"
+                android:padding="8dp"
+                >
                 <TextView
                     android:text="@string/user_id"
                     android:layout_width="wrap_content"
@@ -65,42 +49,37 @@
         </TableRow>
 
         <TableRow>
-            <RelativeLayout>
-                <!--text view for displaying the selected date-->
-                <TextView
-                    android:id="@+id/idTVDate"
-                    android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom">
+                <Button
+                    android:id="@+id/saveRecordButton"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:gravity="center"
-                    android:padding="8dp"
-                    android:text="@string/current_date"
-                    android:textAlignment="center"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    />
-
-                <!-- Add CalendarView to display the Calendar -->
-<!--                <CalendarView-->
-<!--                    android:id="@+id/calendarView"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_below="@id/idTVDate"-->
-<!--                    android:layout_marginTop="-2dp"-->
-<!--                    />-->
-
-                <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/calendarView"
-                    android:layout_width="match_parent"
+                    android:text="@string/save"
+                    style="?android:attr/buttonBarButtonStyle" />
+                <Button
+                    android:id="@+id/viewRecordButton"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:mcv_showOtherDates="all"
-                    app:mcv_selectionColor="#00F"
-                    />
-            </RelativeLayout>
+                    android:text="@string/view"
+                    style="?android:attr/buttonBarButtonStyle" />
+                <Button
+                    android:id="@+id/updateRecordButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/update"
+                    style="?android:attr/buttonBarButtonStyle" />
+                <Button
+                    android:id="@+id/deleteRecordButton"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/delete" />
+
+            </LinearLayout>
         </TableRow>
-
         <TableRow>
                 <ListView
                     android:id="@+id/listView"
@@ -109,7 +88,5 @@
         </TableRow>
     </TableLayout>
 
-
-
-</LinearLayout>
+</ScrollView>
 
