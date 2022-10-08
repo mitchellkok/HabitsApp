@@ -34,10 +34,10 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,
 
 
     //method to insert data
-    fun addEntry(emp: EmpModelClass):Long{
+    fun addEntry(dte: DateModelClass):Long{
         val db = this.writableDatabase
         val contentValues = ContentValues()
-        contentValues.put(KEY_ID, emp.userId)
+        contentValues.put(KEY_ID, dte.dte)
         var success: Long
         try {
             // Inserting Row
@@ -51,8 +51,8 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,
         return success
     }
     //method to read data
-    fun viewEntry():List<EmpModelClass>{
-        val empList:ArrayList<EmpModelClass> = ArrayList()
+    fun viewEntry():List<DateModelClass>{
+        val empList:ArrayList<DateModelClass> = ArrayList()
         val selectQuery = "SELECT  * FROM $TABLE_CONTACTS"
         val db = this.readableDatabase
         val cursor: Cursor
@@ -71,33 +71,33 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,
                 catch (e: Exception) {
                     userId = 0
                 }
-                val emp= EmpModelClass(userId = userId)
-                empList.add(emp)
+                val dte= DateModelClass(dte = userId)
+                empList.add(dte)
             } while (cursor.moveToNext())
         }
         cursor.close()
         return empList
     }
     //method to update data
-    fun updateEntry(emp: EmpModelClass):Int{
+    fun updateEntry(dte: DateModelClass):Int{
         val db = this.writableDatabase
         val contentValues = ContentValues()
-        contentValues.put(KEY_ID, emp.userId)
+        contentValues.put(KEY_ID, dte.dte)
 
 
         // Updating Row
-        val success = db.update(TABLE_CONTACTS, contentValues,"id="+emp.userId,null)
+        val success = db.update(TABLE_CONTACTS, contentValues,"id="+dte.dte, null)
         //2nd argument is String containing nullColumnHack
         db.close() // Closing database connection
         return success
     }
     //method to delete data
-    fun deleteEntry(emp: EmpModelClass):Int{
+    fun deleteEntry(dte: DateModelClass):Int{
         val db = this.writableDatabase
         val contentValues = ContentValues()
-        contentValues.put(KEY_ID, emp.userId) // EmpModelClass UserId
+        contentValues.put(KEY_ID, dte.dte) // DateModelClass date
         // Deleting Row
-        val success = db.delete(TABLE_CONTACTS,"id="+emp.userId,null)
+        val success = db.delete(TABLE_CONTACTS,"id="+dte.dte,null)
         //2nd argument is String containing nullColumnHack
         db.close() // Closing database connection
         return success

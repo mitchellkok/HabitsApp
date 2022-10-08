@@ -15,7 +15,6 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
 class MainActivity : AppCompatActivity() {
     // on below line we are creating
     // variables for text view and calendar view
-    private lateinit var dateTV: TextView
     private lateinit var calendarView: MaterialCalendarView
     private lateinit var uid: EditText
     private lateinit var listView: ListView
@@ -30,19 +29,27 @@ class MainActivity : AppCompatActivity() {
 
         //creating the instance of DatabaseHandler class
         val databaseHandler = DatabaseHandler(this)
+        val dte: List<DateModelClass> = databaseHandler.viewEntry()
+
+        val dates = ArrayList<CalendarDay>()
+        for (e in dte) {
+            val dateString = e.dte.toString()
+            val year = dateString.substring(0,4).toInt()
+            val month = dateString.substring(4,6).toInt()
+            val day = dateString.substring(6,8).toInt()
+            val fullDate = CalendarDay.from(year, month-1, day)
+            dates.add(fullDate)
+        }
+
+        calendarView.addDecorator(MDayDecorator(this@MainActivity, Color.RED, dates))
+
         calendarView.setOnDateChangedListener(OnDateSelectedListener { widget, date, selected ->
             val year = date.year
             val month = date.month + 1
             val dayOfMonth = date.day
-//            val date = ("$dayOfMonth-$month-$year")
             val dateInt = year*10000 + month*100 + dayOfMonth
 
             uid.setText(dateInt.toString())
-
-            var dates = ArrayList<CalendarDay>()
-            dates.add(CalendarDay.from(year, month-1, dayOfMonth - 1))
-            dates.add(CalendarDay.from(year, month-1, dayOfMonth - 2))
-            calendarView.addDecorator(MDayDecorator(this@MainActivity, Color.RED, dates))
 
         })
 
@@ -51,13 +58,12 @@ class MainActivity : AppCompatActivity() {
             val uDate = uid.text.toString()
             val databaseHandler = DatabaseHandler(this)
             if(uDate.trim()!=""){
-                val status = databaseHandler.addEntry(EmpModelClass(Integer.parseInt(uDate)))
+                val status = databaseHandler.addEntry(DateModelClass(Integer.parseInt(uDate)))
                 if(status > -1){
-                    Toast.makeText(applicationContext,"record save",Toast.LENGTH_LONG).show()
-//                    dateTV.text.clear()
+                    Toast.makeText(applicationContext,"record saved",Toast.LENGTH_LONG).show()
                 }
             }else{
-                Toast.makeText(applicationContext,"id or name or email cannot be blank",Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext,"date cannot be blank",Toast.LENGTH_LONG).show()
             }
 
         }
@@ -69,10 +75,10 @@ class MainActivity : AppCompatActivity() {
         //method for read records from database in ListView
         fun viewRecord(databaseHandler: DatabaseHandler) {
             //calling the viewEntry method of DatabaseHandler class to read the records
-            val emp: List<EmpModelClass> = databaseHandler.viewEntry()
-            val dateArrayId = Array(emp.size){"0"}
-            for((index, e) in emp.withIndex()){
-                dateArrayId[index] = e.userId.toString()
+            val dte: List<DateModelClass> = databaseHandler.viewEntry()
+            val dateArrayId = Array(dte.size){"0"}
+            for((index, e) in dte.withIndex()){
+                dateArrayId[index] = e.dte.toString()
                 println("dateArrayId[index] = ${dateArrayId[index]}")
             }
 
@@ -106,7 +112,7 @@ class MainActivity : AppCompatActivity() {
                 val databaseHandler = DatabaseHandler(this)
                 if(updateId.trim()!=""){
                     //calling the updateEntry method of DatabaseHandler class to update record
-                    val status = databaseHandler.updateEntry(EmpModelClass(Integer.parseInt(updateId)))
+                    val status = databaseHandler.updateEntry(DateModelClass(Integer.parseInt(updateId)))
                     if(status > -1){
                         Toast.makeText(applicationContext,"record update",Toast.LENGTH_LONG).show()
                     }
@@ -144,7 +150,7 @@ class MainActivity : AppCompatActivity() {
                 val databaseHandler = DatabaseHandler(this)
                 if(deleteId.trim()!=""){
                     //calling the deleteEntry method of DatabaseHandler class to delete record
-                    val status = databaseHandler.deleteEntry(EmpModelClass(Integer.parseInt(deleteId)))
+                    val status = databaseHandler.deleteEntry(DateModelClass(Integer.parseInt(deleteId)))
                     if(status > -1){
                         Toast.makeText(applicationContext,"record deleted",Toast.LENGTH_LONG).show()
                     }
