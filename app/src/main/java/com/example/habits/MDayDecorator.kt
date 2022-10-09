@@ -1,7 +1,6 @@
 package com.example.habits
 
 import android.app.Activity
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -10,7 +9,6 @@ import com.prolificinteractive.materialcalendarview.DayViewFacade
 
 class MPassDecorator(context: Activity?, dates: ArrayList<CalendarDay>) : DayViewDecorator {
     private val drawable: Drawable?
-    private val colorSet = Color.argb(255, 159, 255, 159)
     private val dateArray = dates
 
     init {
@@ -30,7 +28,6 @@ class MPassDecorator(context: Activity?, dates: ArrayList<CalendarDay>) : DayVie
 
 class MFailDecorator(context: Activity?, dates: ArrayList<CalendarDay>) : DayViewDecorator {
     private val drawable: Drawable?
-    private val colorSet = Color.argb(255, 255, 159, 159)
     private val dateArray = dates
 
     init {
@@ -48,10 +45,8 @@ class MFailDecorator(context: Activity?, dates: ArrayList<CalendarDay>) : DayVie
     }
 }
 
-class MBlankDecorator(context: Activity?, dte: CalendarDay) : DayViewDecorator {
+class MBlankDecorator(context: Activity?) : DayViewDecorator {
     private val drawable: Drawable?
-    private val colorSet = Color.argb(0, 255, 255, 255)
-    private val date = dte
 
     init {
         drawable = ContextCompat.getDrawable(context!!, R.drawable.blank_circle)

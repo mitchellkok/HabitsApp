@@ -12,4 +12,5 @@
     <string name="stats">Stats</string>
     <string name="streak">Streak:</string>
     <string name="percentage">Percentage:</string>
+    <string name="date">Date</string>
 </resources>

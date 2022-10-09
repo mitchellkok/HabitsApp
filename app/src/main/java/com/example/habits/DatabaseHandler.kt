@@ -16,7 +16,6 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,
         private val TABLE_NAME = "EntryTable"
         private val KEY_ID = "id"
         private val KEY_STATUS = "status"
-//        private val KEY_EMAIL = "email"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -43,15 +42,11 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,
         val contentValues = ContentValues()
         contentValues.put(KEY_ID, dte.date)
         contentValues.put(KEY_STATUS, dte.status)
-        var success: Long
-        try {
-            // Inserting Row
-            success = db.insertOrThrow(TABLE_NAME, null, contentValues)
+        val success: Long = try {
+            db.insertOrThrow(TABLE_NAME, null, contentValues) // Inserting Row
+        } catch (e: SQLiteException) {
+            -1
         }
-        catch (e: SQLiteException) {
-            success = -1
-        }
-        //2nd argument is String containing nullColumnHack
         db.close() // Closing database connection
         return success
     }
@@ -87,18 +82,7 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,
         cursor.close()
         return dteList
     }
-    //method to update data
-    fun updateEntry(dte: DateModelClass):Int{
-        val db = this.writableDatabase
-        val contentValues = ContentValues()
-        contentValues.put(KEY_ID, dte.date)
-        contentValues.put(KEY_STATUS, dte.status)
 
-        // Updating Row
-        val success = db.update(TABLE_NAME, contentValues,"id="+dte.date, null) //2nd argument is String containing nullColumnHack
-        db.close() // Closing database connection
-        return success
-    }
     //method to delete data
     fun deleteEntry(dte: DateModelClass):Int{
         val db = this.writableDatabase
@@ -113,10 +97,7 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,
 
     fun deleteAll() {
         val db = this.writableDatabase
-        //SQLiteDatabase db = this.getWritableDatabase();
-        // db.delete(TABLE_NAME,null,null);
-        //db.execSQL("delete * from"+ TABLE_NAME);
-        db.execSQL("delete from $TABLE_NAME");
+        db.execSQL("delete from $TABLE_NAME")
         db.close()
     }
 }
