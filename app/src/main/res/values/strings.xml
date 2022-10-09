@@ -1,11 +1,13 @@
 <resources>
     <string name="app_name">Habits</string>
-    <string name="user_id">Date</string>
+    <string name="user_id">Date:</string>
     <string name="current_date">Current Date</string>
-    <string name="save">Save</string>
+    <string name="pass">Pass</string>
+    <string name="fail">Fail</string>
     <string name="view">View</string>
     <string name="update">Update</string>
     <string name="delete">Delete</string>
-    <string name="enter_id">enter id</string>
+    <string name="enter_id">Enter Date</string>
     <string name="id">Id</string>
+    <string name="stats">Stats</string>
 </resources>

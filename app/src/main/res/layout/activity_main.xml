@@ -9,7 +9,8 @@
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
         <TableRow>
             <RelativeLayout>
 
@@ -18,8 +19,9 @@
                     android:id="@+id/calendarView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:padding="10dp"
                     app:mcv_showOtherDates="all"
-                    app:mcv_selectionColor="#00F"
+                    app:mcv_selectionColor="@color/grey"
                     />
             </RelativeLayout>
         </TableRow>
@@ -29,6 +31,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:padding="8dp"
                 >
                 <TextView
@@ -44,38 +48,70 @@
                     android:layout_marginStart="20sp"
                     android:autofillHints=""
                     android:inputType="number" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="40dp"
+                    >
+                    <Button
+                        android:id="@+id/viewStreakButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/stats"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:backgroundTint="@color/dark_grey"
+                        style="?android:attr/buttonBarButtonStyle" />
+                </LinearLayout>
             </LinearLayout>
 
         </TableRow>
 
-        <TableRow>
+        <TableRow android:layout_width="match_parent">
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom">
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
                 <Button
-                    android:id="@+id/saveRecordButton"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/savePassRecordButton"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/save"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text="@string/pass"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/light_green"
                     style="?android:attr/buttonBarButtonStyle" />
+
+                <Button
+                    android:id="@+id/saveFailRecordButton"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:backgroundTint="@color/light_red"
+                    android:text="@string/fail"
+                    android:textColor="@color/white"
+                    />
+
                 <Button
                     android:id="@+id/viewRecordButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
                     android:text="@string/view"
                     style="?android:attr/buttonBarButtonStyle" />
-                <Button
-                    android:id="@+id/updateRecordButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/update"
-                    style="?android:attr/buttonBarButtonStyle" />
+
                 <Button
                     android:id="@+id/deleteRecordButton"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="15dp"
                     android:text="@string/delete" />
 
             </LinearLayout>
@@ -84,7 +120,9 @@
                 <ListView
                     android:id="@+id/listView"
                     android:layout_width="wrap_content"
-                    android:layout_height="350sp" />
+                    android:layout_height="350sp"
+                    android:padding="8dp"
+                    />
         </TableRow>
     </TableLayout>
 
