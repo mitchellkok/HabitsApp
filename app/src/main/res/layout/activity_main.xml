@@ -47,6 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20sp"
                     android:backgroundTint="@color/dark_grey"
+                    android:textColor="@color/dark_grey"
                     android:autofillHints=""
                     android:hint="@string/date"
                     android:inputType="number" />
