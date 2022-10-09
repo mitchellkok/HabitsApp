@@ -10,4 +10,6 @@
     <string name="enter_id">Enter Date</string>
     <string name="id">Id</string>
     <string name="stats">Stats</string>
+    <string name="streak">Streak:</string>
+    <string name="percentage">Percentage:</string>
 </resources>

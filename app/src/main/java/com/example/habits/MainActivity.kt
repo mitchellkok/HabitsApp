@@ -1,7 +1,7 @@
 package com.example.habits
 
+import android.annotation.SuppressLint
 import android.content.DialogInterface
-import android.icu.util.Calendar
 import android.os.Bundle
 import android.view.View
 import android.widget.*
@@ -16,11 +16,11 @@ class MainActivity : AppCompatActivity() {
     // on below line we are creating
     // variables for text view and calendar view
     private lateinit var calendarView: MaterialCalendarView
-    private lateinit var viewStreakButton: Button
     private lateinit var uid: EditText
     private lateinit var listView: ListView
+    private val daysInMilli: Int = (1000 * 60 * 60 * 24)
 
-    private fun getStats(databaseHandler: DatabaseHandler): Int {
+    private fun getStats(databaseHandler: DatabaseHandler, button: Button): IntArray {
         //calling the viewEntry method of DatabaseHandler class to read the records
         val dte: List<DateModelClass> = databaseHandler.viewEntry()
         val dateArrayId = Array(dte.size){"0"}
@@ -31,17 +31,54 @@ class MainActivity : AppCompatActivity() {
         }
         dateArrayId.sortDescending()
         var dayCount = 0
+        var passCount = 0
+        var maxDays =  0
+        var failed = false
+        var prevJavaDate = CalendarDay.today().date
         for (item in dateArrayId) {
-            if (item[item.length - 1] != '1') { break }
-            else {
-                var year = item.substring(0,4).toInt()
-                var month = item.substring(4,6).toInt()
-                var day = item.substring(6,8).toInt()
-//                if
-            }
+            val year = item.substring(0,4).toInt()
+            val month = item.substring(4,6).toInt()
+            val day = item.substring(6,8).toInt()
+            val javaDate = CalendarDay.from(year, month-1, day).date
+            if (((prevJavaDate.time - javaDate.time ) / daysInMilli) > 1) { break } // gap too big
+            prevJavaDate = javaDate
             dayCount += 1
+            if (item[item.length - 1] == '1') {
+                if (!failed) { maxDays = dayCount }
+                passCount += 1
+            } else {
+                failed = true
+            }
         }
-        return dayCount
+
+        button.text = maxDays.toString()
+        return intArrayOf(maxDays, passCount, dayCount)
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun viewStats(databaseHandler: DatabaseHandler, viewStatsButton: Button) {
+        //creating AlertDialog for taking user id
+        val dialogBuilder = AlertDialog.Builder(this)
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.stats_dialog, null)
+        dialogBuilder.setView(dialogView)
+
+        val streakBox = dialogView.findViewById(R.id.stats_streak) as TextView
+        val percentBox = dialogView.findViewById(R.id.stats_percent) as TextView
+
+        val stats = getStats(databaseHandler, viewStatsButton)
+        val percent = 100 * stats[1] / stats[2]
+        streakBox.text = stats[0].toString()
+        percentBox.text = "$percent%"
+
+        dialogBuilder.setTitle("Habit Statistics")
+        dialogBuilder.setPositiveButton("Ok", DialogInterface.OnClickListener { _, _ ->
+
+
+        })
+
+        val b = dialogBuilder.create()
+        b.show()
     }
 
     private fun highlightDates(calendarView: MaterialCalendarView, databaseHandler: DatabaseHandler) {
@@ -61,7 +98,6 @@ class MainActivity : AppCompatActivity() {
                 datesFail.add(fullDate)
             }
         }
-
         calendarView.addDecorators(
             MPassDecorator(this@MainActivity, datesPass),
             MFailDecorator(this@MainActivity, datesFail),
@@ -114,7 +150,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     //method for deleting records based on id
-    private fun deleteRecord(databaseHandler: DatabaseHandler) {
+    private fun deleteRecord(databaseHandler: DatabaseHandler, statsButton: Button) {
         //creating AlertDialog for taking user id
         val dialogBuilder = AlertDialog.Builder(this)
         val inflater = this.layoutInflater
@@ -130,16 +166,26 @@ class MainActivity : AppCompatActivity() {
 
             val deleteId = dltId.text.toString()
             unhighlightDates(calendarView, deleteId.toInt())  // Remove highlight
-            if(deleteId.trim()!=""){
+            if (deleteId.trim() != "") {
                 //calling the deleteEntry method of DatabaseHandler class to delete record
-                val status = databaseHandler.deleteEntry(DateModelClass(Integer.parseInt(deleteId), 1)) // only date matters
-                if(status > -1){
-                    Toast.makeText(applicationContext,"record deleted",Toast.LENGTH_LONG).show()
+                val status = databaseHandler.deleteEntry(
+                    DateModelClass(
+                        Integer.parseInt(deleteId),
+                        1
+                    )
+                ) // only date matters
+                if (status > -1) {
+                    Toast.makeText(applicationContext, "record deleted", Toast.LENGTH_LONG).show()
                 }
-            }else{
-                Toast.makeText(applicationContext,"id or name or email cannot be blank",Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(
+                    applicationContext,
+                    "id or name or email cannot be blank",
+                    Toast.LENGTH_LONG
+                ).show()
             }
             highlightDates(calendarView, databaseHandler)      // Refresh highlights
+            getStats(databaseHandler, statsButton)
         })
         dialogBuilder.setNegativeButton("Cancel", DialogInterface.OnClickListener { _, _ ->
             //pass
@@ -157,8 +203,9 @@ class MainActivity : AppCompatActivity() {
         //creating the instance of DatabaseHandler class
         val databaseHandler = DatabaseHandler(this)
 //        databaseHandler.deleteAll()
-        viewStreakButton = findViewById(R.id.viewStreakButton)
-        viewStreakButton.text = getStats(databaseHandler).toString()
+        val viewStatsButton: Button = findViewById(R.id.viewStatsButton)
+        getStats(databaseHandler, viewStatsButton)
+
 
         val today = CalendarDay.today()
         calendarView = findViewById(R.id.calendarView)
@@ -180,15 +227,20 @@ class MainActivity : AppCompatActivity() {
             uid.setText(dateInt.toString())
         })
 
+        viewStatsButton.setOnClickListener {
+            viewStats(databaseHandler, viewStatsButton)
+        }
         val savePassRecordButton: Button = findViewById(R.id.savePassRecordButton)
         savePassRecordButton.setOnClickListener {
             saveRecord(databaseHandler, true)
             highlightDates(calendarView, databaseHandler)
+            getStats(databaseHandler, viewStatsButton)
         }
         val saveFailRecordButton: Button = findViewById(R.id.saveFailRecordButton)
         saveFailRecordButton.setOnClickListener {
             saveRecord(databaseHandler, false)
             highlightDates(calendarView, databaseHandler)
+            getStats(databaseHandler, viewStatsButton)
         }
         val viewRecordButton: Button = findViewById(R.id.viewRecordButton)
         viewRecordButton.setOnClickListener {
@@ -196,7 +248,7 @@ class MainActivity : AppCompatActivity() {
         }
         val deleteRecordButton: Button = findViewById(R.id.deleteRecordButton)
         deleteRecordButton.setOnClickListener {
-            deleteRecord(databaseHandler)
+            deleteRecord(databaseHandler, viewStatsButton)
         }
 
     }
