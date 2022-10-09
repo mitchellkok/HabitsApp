@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
+    android:colorPrimary="@color/dark_grey"
     tools:context=".MainActivity"
     android:orientation="vertical">
 
@@ -119,15 +120,6 @@
 
             </LinearLayout>
         </TableRow>
-        <TableRow>
-                <ListView
-                    android:id="@+id/listView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:padding="8dp"
-                    />
-        </TableRow>
     </TableLayout>
-
 </ScrollView>
 

@@ -3,7 +3,6 @@ package com.example.habits
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -53,8 +52,7 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun viewStats(databaseHandler: DatabaseHandler, viewStatsButton: Button) {
-        //creating AlertDialog for taking user id
-        val dialogBuilder = AlertDialog.Builder(this)
+        val dialogBuilder = AlertDialog.Builder(this, R.style.DialogStyle)
         val inflater = this.layoutInflater
         val dialogView = inflater.inflate(R.layout.stats_dialog, null)
         dialogBuilder.setView(dialogView)
@@ -124,9 +122,9 @@ class MainActivity : AppCompatActivity() {
         val dateArrayId = Array(dte.size){"0"}
         for((index, e) in dte.withIndex()){
             val dateString = e.date.toString()
-            val year = dateString.substring(0,4).toInt()
-            val month = dateString.substring(4,6).toInt()
-            val day = dateString.substring(6,8).toInt()
+            val year = dateString.substring(0,4)
+            val month = dateString.substring(4,6)
+            val day = dateString.substring(6,8)
             val status: String = if (e.status == 1) {
                 "Passed"
             } else {
@@ -134,16 +132,21 @@ class MainActivity : AppCompatActivity() {
             }
             dateArrayId[index] = "$year-$month-$day : $status"
         }
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, dateArrayId)
-        val itemCount: Int = adapter.count
 
-        listView = findViewById(R.id.listView)
-        val params: ViewGroup.LayoutParams = listView.layoutParams
-        params.height = itemCount * 140
+        val dialogBuilder = AlertDialog.Builder(this, R.style.DialogStyle)
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.list_dialog, null)
+        dialogBuilder.setView(dialogView)
 
-        listView.layoutParams = params
-        listView.requestLayout()
+        dateArrayId.sortDescending()
+        val adapter = ArrayAdapter(this, R.layout.list_dark_text, dateArrayId)
+        listView = dialogView.findViewById(R.id.listView)
         listView.adapter = adapter
+
+        dialogBuilder.setTitle("History")
+        dialogBuilder.setPositiveButton("Ok") { _, _ -> }
+        val b = dialogBuilder.create()
+        b.show()
     }
 
     //method for deleting records based on id
