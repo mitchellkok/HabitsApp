@@ -1,4 +1,4 @@
-# TrackerApp
+# HabitsApp
 
 #### About this project
 "Men's natures are alike, it is their habits that carry them far apart" ~ Confucius
