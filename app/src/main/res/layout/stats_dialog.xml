@@ -33,6 +33,30 @@
                 android:padding="10dp"
                 />
         </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <TextView
+                android:text="This Month:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:padding="10dp"
+                />
+            <TextView
+                android:id="@+id/monthly_percent"
+                android:text="@string/percentage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark_grey"
+                android:textSize="18sp"
+                android:padding="10dp"
+                />
+        </TableRow>
+        
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"

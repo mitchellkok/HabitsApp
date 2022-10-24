@@ -8,6 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
+import kotlin.math.abs
 
 
 class MainActivity : AppCompatActivity() {
@@ -30,24 +31,43 @@ class MainActivity : AppCompatActivity() {
         var passCount = 0
         var maxDays =  0
         var failed = false
-        var prevJavaDate = CalendarDay.today().date
+        var today = CalendarDay.today()
+        var prevJavaDate = today.date
+
+        var thisMonth = today.month
+        var thisMonthDayCount = 0
+        var thisMonthPassCount = 0
+
         for (item in dateArrayId) {
             val year = item.substring(0,4).toInt()
             val month = item.substring(4,6).toInt()
             val day = item.substring(6,8).toInt()
             val javaDate = CalendarDay.from(year, month-1, day).date
-            if (((prevJavaDate.time - javaDate.time ) / daysInMilli) > 1) { break } // gap too big
+            if ((abs(prevJavaDate.time - javaDate.time ) / daysInMilli) > 1 && dayCount != 0) {
+                if (((javaDate.time - today.date.time) / daysInMilli) > 0) { continue }   // future date big gap
+                break      // gap too big; stop calculating
+            }
+
             prevJavaDate = javaDate
             dayCount += 1
-            if (item[item.length - 1] == '1') {
-                if (!failed) { maxDays = dayCount }
-                passCount += 1
-            } else {
-                failed = true
+            if (month-1 == thisMonth) { // for monthly stats
+                thisMonthDayCount += 1
+                if (item[item.length - 1] == '1') {
+                    if (!failed) { maxDays = dayCount }
+                    passCount += 1
+                    thisMonthPassCount += 1
+                }
+                else { failed = true }
+            } else {    // for overall stats
+                if (item[item.length - 1] == '1') {
+                    if (!failed) { maxDays = dayCount }
+                    passCount += 1
+                }
+                else { failed = true }
             }
         }
         button.text = maxDays.toString()
-        return intArrayOf(maxDays, passCount, dayCount)
+        return intArrayOf(maxDays, passCount, dayCount, thisMonthPassCount, thisMonthDayCount)
     }
 
     @SuppressLint("SetTextI18n")
@@ -59,11 +79,15 @@ class MainActivity : AppCompatActivity() {
 
         val streakBox = dialogView.findViewById(R.id.stats_streak) as TextView
         val percentBox = dialogView.findViewById(R.id.stats_percent) as TextView
+        val monthlyPercentBox = dialogView.findViewById(R.id.monthly_percent) as TextView
 
         val stats = getStats(databaseHandler, viewStatsButton)
         val percent = 100 * stats[1] / stats[2]
+        val monthPercent = 100 * stats[3] / stats[4]
+
         streakBox.text = stats[0].toString()
         percentBox.text = "$percent%"
+        monthlyPercentBox.text = "$monthPercent%"
 
         dialogBuilder.setTitle("Habit Statistics")
         dialogBuilder.setPositiveButton("Ok") { _, _ -> }
