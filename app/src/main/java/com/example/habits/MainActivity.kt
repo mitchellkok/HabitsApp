@@ -2,6 +2,7 @@ package com.example.habits
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -31,10 +32,10 @@ class MainActivity : AppCompatActivity() {
         var passCount = 0
         var maxDays =  0
         var failed = false
-        var today = CalendarDay.today()
+        val today = CalendarDay.today()
         var prevJavaDate = today.date
 
-        var thisMonth = today.month
+        val thisMonth = today.month
         var thisMonthDayCount = 0
         var thisMonthPassCount = 0
 
@@ -50,6 +51,7 @@ class MainActivity : AppCompatActivity() {
 
             prevJavaDate = javaDate
             dayCount += 1
+
             if (month-1 == thisMonth) { // for monthly stats
                 thisMonthDayCount += 1
                 if (item[item.length - 1] == '1') {
@@ -83,11 +85,15 @@ class MainActivity : AppCompatActivity() {
 
         val stats = getStats(databaseHandler, viewStatsButton)
         val percent = 100 * stats[1] / stats[2]
-        val monthPercent = 100 * stats[3] / stats[4]
+        var monthPercentText = "No Data"
+        if (stats[4] > 0) {
+            val monthPercent = 100 * stats[3] / stats[4]
+            monthPercentText = "$monthPercent%"
+        }
 
         streakBox.text = stats[0].toString()
         percentBox.text = "$percent%"
-        monthlyPercentBox.text = "$monthPercent%"
+        monthlyPercentBox.text = monthPercentText
 
         dialogBuilder.setTitle("Habit Statistics")
         dialogBuilder.setPositiveButton("Ok") { _, _ -> }
